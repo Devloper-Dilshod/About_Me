@@ -1,0 +1,77 @@
+{
+    "about": {
+        "text": [
+            "Men frontend dasturchiman va <span class='highlight'>Edd Academy</span> o'quv markazida dasturlashni o'rganganman. Shu vaqt ichida turli loyihalarda ishladim va o'z ko'nikmalarimni rivojlantirdim.",
+            "Mening asosiy maqsadim - foydalanuvchilar uchun qulay va zamonaviy interfeyslar yaratish.",
+            "Har bir loyihada yangi texnologiyalarni o'rganishga va mukammal natijalarga erishishga intilaman. Mening ishimda diqqat markazida har doim foydalanuvchi tajribasi (UX) turadi."
+        ],
+        "stats": [
+            { "value": "8", "label": "Oylik Tajriba" },
+            { "value": "30+", "label": "Bajargan Loyihalar" },
+            { "value": "100%", "label": "Mijozlar Qoniqishi" }
+        ]
+    },
+    "skills": [
+        { "name": "HTML", "level": 100 },
+        { "name": "CSS/SCSS", "level": 85 },
+        { "name": "JavaScript", "level": 90 },
+        { "name": "React", "level": 75 },
+        { "name": "Vue", "level": 70 },
+        { "name": "Tailwind", "level": 90 },
+        { "name": "Git & Github", "level": 65 },
+        { "name": "Figma", "level": 75 },
+        { "name": "API Integration", "level": 80 },
+        { "name": "Responsive Design", "level": 90 },
+        { "name": "Vibe Coding Experience", "level": "2 Years", "isSpecial": true }
+    ],
+    "projects": [
+        {
+            "title": "Fast Food Uz",
+            "description": "Fast Food mahsulotlarini sotish uchun zamonaviy veb-sayt",
+            "detailedDescription": "Bu loyihada zamonaviy fast food saytini yaratdim. Foydalanuvchilar ovqat buyurtma berishi, menyuni ko'rishi va maxsus takliflardan foydalanishi mumkin. Sayt to'liq javob beradi va barcha qurilmalarda mukammal ishlaydi.",
+            "image": "./images/fastfooduz.png",
+            "url": "https://fast-food-uz.vercel.app/",
+            "technologies": ["HTML", "CSS", "JavaScript"]
+        },
+        {
+            "title": "Weather App",
+            "description": "Havo ma'lumotlarini ko'rsatadigan interaktiv ilova",
+            "detailedDescription": "Bu havoni bashorat qilish ilovasi turli shaharlar uchun aniq ob-havo ma'lumotlarini taqdim etadi. Zamonaviy interfeys va real vaqt ma'lumotlari bilan.",
+            "image": "./images/weather.png",
+            "url": "https://weather-app-by-dilshod.vercel.app/",
+            "technologies": ["HTML" ,"JavaScript", "CSS", "API" ]
+        },
+        {
+            "title": "Bahor Restaurant",
+            "description": "Restoran uchun zamonaviy veb-sayt",
+            "detailedDescription": "Bahor restorani uchun yaratilgan veb-sayt. Menyu, bron qilish tizimi va restoran haqida ma'lumotlarni o'z ichiga oladi. Samarali va jozibali dizayn.",
+            "image": "./images/bahor5.png",
+            "url": "https://bahor-5.vercel.app/",
+            "technologies": ["HTML", "CSS", "JavaScript"]
+        },
+        {
+            "title": "Uyishichirobot",
+            "description": "Uy ishlarini oson qilib beruvchi telegram bot",
+            "detailedDescription": "Uy ishlarini professioanl darajada qilib beruchi <span class='highlight'>VIBE CODING</span> bilan yaratilgan telegram bot",
+            "image": "./images/uyishichirobot.jpg",
+            "url": "https://t.me/uyishichirobot",
+            "technologies": ["VIBE CODING" , "Python", "API"]
+        },
+        {
+            "title": "Media Kinochi Bot",
+            "description": "Kinolarni nomi bilan topish uchun bot.",
+            "detailedDescription": "Kinolarni oson va tez topish uchun qulay <span class='highlight'>VIBE CODING</span> bilan yaratilgan bot, admin panel va kino buyurtma berish tizimi bilan.",
+            "image": "./images/mediakinochi.jpg",
+            "url": "https://t.me/media_kinochi_bot",
+            "technologies": ["VIBE CODING" , "Python", "Sqlite3"]
+        }
+    ],
+    "contact": {
+        "description": "Loyiha yoki hamkorlik uchun bog'lanishni xohlaysizmi? Quyidagi Telegram orqali bemalol murojaat qilishingiz mumkin.",
+        "telegram": {
+            "username": "@dilshod_sayfiddinov",
+            "url": "https://t.me/dilshod_sayfiddinov"
+        }
+        
+    }
+}
