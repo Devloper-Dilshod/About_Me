@@ -53,7 +53,7 @@ const chatbotMessages = document.getElementById('chatbotMessages');
 const chatbotInput = document.getElementById('chatbotInput');
 const sendMessage = document.getElementById('sendMessage');
 
-const GEMINI_API_KEY = '';
+const GEMINI_API_KEY = 'AIzaSyDFDKwoblxAmd7DOwVEQppqvbNehq9QWYo'; // tegingan ko't
 
 chatbotToggle.addEventListener('click', () => {
     chatbotWindow.classList.toggle('active');
