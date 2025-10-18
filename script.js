@@ -53,7 +53,7 @@ const chatbotMessages = document.getElementById('chatbotMessages');
 const chatbotInput = document.getElementById('chatbotInput');
 const sendMessage = document.getElementById('sendMessage');
 
-const GEMINI_API_KEY = 'AIzaSyDFDKwoblxAmd7DOwVEQppqvbNehq9QWYo';
+const GEMINI_API_KEY = 'AIzaSyDFDKwoblxAmd7DOwVEQppqvbNehq9QWYo'; // tegingan ko't
 
 chatbotToggle.addEventListener('click', () => {
     chatbotWindow.classList.toggle('active');
@@ -288,6 +288,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
     }
+<<<<<<< HEAD
 
     // Existing styles for typing indicator
     const style = document.createElement('style');
@@ -335,3 +336,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 });
+=======
+});
+>>>>>>> 6dc38d2351b647aa282635d535baac15636632a7
