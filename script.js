@@ -173,54 +173,9 @@ window.addEventListener('scroll', () => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-    animateSkillBars();
+    const loadingScreen = document.getElementById('loadingScreen');
+    const mainContent = document.getElementById('mainContent');
 
-    const style = document.createElement('style');
-    style.textContent = `
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-        .typing-dots span {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--neon-green);
-            animation: typing 1.4s infinite ease-in-out;
-        }
-        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-    `;
-    document.head.appendChild(style);
-
-    document.querySelectorAll('.project-image img').forEach(img => {
-        img.addEventListener('error', function() {
-            this.style.display = 'none';
-            const parent = this.parentElement;
-            const placeholder = document.createElement('div');
-            placeholder.style.cssText = `
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(135deg, #1f1f2f, #2d2d44);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-weight: bold;
-                font-size: 1.2rem;
-                text-align: center;
-                padding: 1rem;
-            `;
-            placeholder.textContent = this.alt;
-            parent.appendChild(placeholder);
-        });
-    });
-
-    // JSON ma'lumotlarini yuklash va sahifaga qo'shish
     try {
         const response = await fetch('data.json');
         const data = await response.json();
@@ -318,7 +273,65 @@ document.addEventListener('DOMContentLoaded', async () => {
                 Telegram: ${data.contact.telegram.username}
             </a>
         `;
+
+        // Hide loading screen and show main content
+        loadingScreen.style.display = 'none';
+        mainContent.style.display = 'block';
+        animateSkillBars();
     } catch (error) {
         console.error('Ma\'lumotlarni yuklashda xatolik:', error);
+        // Show error message if JSON loading fails
+        loadingScreen.innerHTML = `
+            <div class="loading-content">
+                <img src="./images/favicon.png" alt="Dilshod Logo" class="loading-logo">
+                <p>Xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.</p>
+            </div>
+        `;
     }
+
+    // Existing styles for typing indicator
+    const style = document.createElement('style');
+    style.textContent = `
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    document.querySelectorAll('.project-image img').forEach(img => {
+        img.addEventListener('error', function() {
+            this.style.display = 'none';
+            const parent = this.parentElement;
+            const placeholder = document.createElement('div');
+            placeholder.style.cssText = `
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #1f1f2f, #2d2d44);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                font-size: 1.2rem;
+                text-align: center;
+                padding: 1rem;
+            `;
+            placeholder.textContent = this.alt;
+            parent.appendChild(placeholder);
+        });
+    });
 });

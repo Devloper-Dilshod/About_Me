@@ -9,119 +9,113 @@
     <link rel="icon" type="image/png" href="./images/favicon.png">
 </head>
 <body>
-
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="#home">Portifilo</a>
-            </div>
-            <div class="nav-menu">
-                <a href="#home" class="nav-link">Bosh Sahifa</a>
-                <a href="#about" class="nav-link">Men Haqimda</a>
-                <a href="#skills" class="nav-link">Ko'nikmalar</a>
-                <a href="#projects" class="nav-link">Loyihalar</a>
-                <a href="#contact" class="nav-link">Bog'lanish</a>
-            </div>
-            <div class="nav-toggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </div>
-    </nav>
-
-
-    <section id="home" class="hero">
-        <video autoplay muted loop class="hero-video">
-            <source src="./background.mp4" type="video/mp4">
-            Sizning brauzeringiz video formatini qo'llab-quvvatlamaydi.
-        </video>
-        <div class="hero-content">
-            <h1 class="hero-title">Dilshod Sayfiddinov</h1>
-            <h2 class="hero-subtitle">Salom , Men <span class="focus-text">Frontend Dasturchiman</span></h2>
-            <p class="hero-description">Men <span class="focus-text"><b>Junior</b></span> tajribaga ega Frontend dasturchiman.</p>
-            <a href="#projects" class="cta-button">Loyihalarimni Ko'ring</a>
-        </div>
-    </section>
-
-
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">Men Haqimda</h2>
-            <div class="about-content">
-                <div class="about-text">
-
-                </div>
-                <div class="about-stats" id="about-stats">
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <section id="skills" class="skills">
-        <div class="container">
-            <h2 class="section-title">Mening Ko'nikmalarim</h2>
-            <div class="skills-grid" id="skills-grid">
-
-            </div>
-        </div>
-    </section>
-
-
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="section-title">Mening Loyihalarim</h2>
-            <div class="projects-grid" id="projects-grid">
-
-            </div>
-        </div>
-    </section>
-
-
-
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Bog'lanish</h2>
-            <div class="contact-content" id="contact-content">
-
-            </div>
-        </div>
-    </section>
-
-    <div class="chatbot-container">
-        <div class="chatbot-icon" id="chatbotToggle">
-            <i class="fas fa-robot"></i>
-            <span class="tooltip">Sizga yordam kerakmi? Men haqimda savol bering!</span>
-        </div>
-        <div class="chatbot-window" id="chatbotWindow">
-            <div class="chatbot-header">
-                <h3>Dilshod AI Yordamchisi</h3>
-                <button class="close-chatbot" id="closeChatbot">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="chatbot-messages" id="chatbotMessages">
-                <div class="message bot-message">
-                    Salom! Men Dilshod haqida ma'lumot beruvchi AI yordamchiman. 
-                    Savolingizni bering, men sizga yordam beraman!
-                </div>
-            </div>
-            <div class="chatbot-input">
-                <input type="text" id="chatbotInput" placeholder="Savolingizni yozing...">
-                <button id="sendMessage">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <img src="./images/favicon.png" alt="Dilshod Logo" class="loading-logo">
+            <p>Yuklanmoqda...</p>
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Dilshod Sayfiddinov. Barcha huquqlar himoyalangan.</p>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="#home">Portifilo</a>
+                </div>
+                <div class="nav-menu">
+                    <a href="#home" class="nav-link">Bosh Sahifa</a>
+                    <a href="#about" class="nav-link">Men Haqimda</a>
+                    <a href="#skills" class="nav-link">Ko'nikmalar</a>
+                    <a href="#projects" class="nav-link">Loyihalar</a>
+                    <a href="#contact" class="nav-link">Bog'lanish</a>
+                </div>
+                <div class="nav-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+
+        <section id="home" class="hero">
+            <video autoplay muted loop class="hero-video">
+                <source src="./background.mp4" type="video/mp4">
+                Sizning brauzeringiz video formatini qo'llab-quvvatlamaydi.
+            </video>
+            <div class="hero-content">
+                <h1 class="hero-title">Dilshod Sayfiddinov</h1>
+                <h2 class="hero-subtitle">Salom , Men <span class="focus-text">Frontend Dasturchiman</span></h2>
+                <p class="hero-description">Men <span class="focus-text"><b>Junior</b></span> tajribaga ega Frontend dasturchiman.</p>
+                <a href="#projects" class="cta-button">Loyihalarimni Ko'ring</a>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <h2 class="section-title">Men Haqimda</h2>
+                <div class="about-content">
+                    <div class="about-text"></div>
+                    <div class="about-stats" id="about-stats"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="skills">
+            <div class="container">
+                <h2 class="section-title">Mening Ko'nikmalarim</h2>
+                <div class="skills-grid" id="skills-grid"></div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects">
+            <div class="container">
+                <h2 class="section-title">Mening Loyihalarim</h2>
+                <div class="projects-grid" id="projects-grid"></div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="container">
+                <h2 class="section-title">Bog'lanish</h2>
+                <div class="contact-content" id="contact-content"></div>
+            </div>
+        </section>
+
+        <div class="chatbot-container">
+            <div class="chatbot-icon" id="chatbotToggle">
+                <i class="fas fa-robot"></i>
+                <span class="tooltip">Sizga yordam kerakmi? Men haqimda savol bering!</span>
+            </div>
+            <div class="chatbot-window" id="chatbotWindow">
+                <div class="chatbot-header">
+                    <h3>Dilshod AI Yordamchisi</h3>
+                    <button class="close-chatbot" id="closeChatbot">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="chatbot-messages" id="chatbotMessages">
+                    <div class="message bot-message">
+                        Salom! Men Dilshod haqida ma'lumot beruvchi AI yordamchiman. 
+                        Savolingizni bering, men sizga yordam beraman!
+                    </div>
+                </div>
+                <div class="chatbot-input">
+                    <input type="text" id="chatbotInput" placeholder="Savolingizni yozing...">
+                    <button id="sendMessage">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-    </footer>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 Dilshod Sayfiddinov. Barcha huquqlar himoyalangan.</p>
+            </div>
+        </footer>
+    </div>
 
     <script src="script.js"></script>
 </body>

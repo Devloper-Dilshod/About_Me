@@ -34,6 +34,52 @@ body {
     padding: 0 20px;
 }
 
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--dark-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-logo {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.loading-content p {
+    font-size: 1.2rem;
+    color: var(--neon-blue);
+    text-shadow: 0 0 8px var(--neon-blue);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 /* Navigation */
 .navbar {
     position: fixed;
@@ -664,19 +710,21 @@ section {
     .nav-menu {
         position: fixed;
         top: 70px;
-        right: -100%;
+        left: 0;
+        width: 100%;
+        max-width: 100vw;
         flex-direction: column;
         background: var(--glass-bg);
         backdrop-filter: blur(15px);
-        width: 100%;
         text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
         padding: 2rem 0;
+        z-index: 999;
     }
 
     .nav-menu.active {
-        right: 0;
+        transform: translateX(0);
     }
 
     .nav-toggle {
@@ -719,6 +767,7 @@ section {
     .chatbot-window {
         width: 300px;
         height: 400px;
+        right: 10px;
     }
 }
 
@@ -740,7 +789,8 @@ section {
     }
 
     .chatbot-window {
-        width: 280px;
-        right: -50px;
+        width: 90vw;
+        right: 5vw;
+        height: 400px;
     }
 }
