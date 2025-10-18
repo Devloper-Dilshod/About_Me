@@ -1,22 +1,27 @@
 const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav-menu');
+const loadingScreen = document.getElementById('loadingScreen');
+const mainContent = document.getElementById('mainContent');
 
-navToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    navToggle.classList.toggle('active');
-});
-
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        navToggle.classList.remove('active');
+if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        navToggle.classList.toggle('active');
     });
-});
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+            navToggle.classList.remove('active');
+        });
+    });
+}
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const targetId = this.getAttribute('href');
+        const target = document.querySelector(targetId);
         if (target) {
             target.scrollIntoView({
                 behavior: 'smooth',
@@ -30,20 +35,22 @@ const animateSkillBars = () => {
     const skillBars = document.querySelectorAll('.skill-progress');
     const skillsSection = document.querySelector('.skills');
     
+    if (!skillsSection || !skillBars.length) return;
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 skillBars.forEach(bar => {
                     const width = bar.getAttribute('data-width');
-                    bar.style.width = width + '%';
+                    if (width) {
+                        bar.style.width = width + '%';
+                    }
                 });
             }
         });
     }, { threshold: 0.5 });
     
-    if (skillsSection) {
-        observer.observe(skillsSection);
-    }
+    observer.observe(skillsSection);
 };
 
 const chatbotToggle = document.getElementById('chatbotToggle');
@@ -53,17 +60,21 @@ const chatbotMessages = document.getElementById('chatbotMessages');
 const chatbotInput = document.getElementById('chatbotInput');
 const sendMessage = document.getElementById('sendMessage');
 
-const GEMINI_API_KEY = 'AIzaSyDFDKwoblxAmd7DOwVEQppqvbNehq9QWYo'; // tegingan ko't
+const GEMINI_API_KEY = 'AIzaSyDFDKwoblxAmd7DOwVEQppqvbNehq9QWYo';
 
-chatbotToggle.addEventListener('click', () => {
-    chatbotWindow.classList.toggle('active');
-});
+if (chatbotToggle && chatbotWindow && closeChatbot) {
+    chatbotToggle.addEventListener('click', () => {
+        chatbotWindow.classList.toggle('active');
+    });
 
-closeChatbot.addEventListener('click', () => {
-    chatbotWindow.classList.remove('active');
-});
+    closeChatbot.addEventListener('click', () => {
+        chatbotWindow.classList.remove('active');
+    });
+}
 
 const sendChatMessage = async () => {
+    if (!chatbotInput || !chatbotMessages) return;
+
     const message = chatbotInput.value.trim();
     if (!message) return;
 
@@ -84,6 +95,8 @@ const sendChatMessage = async () => {
 };
 
 const addMessage = (text, sender) => {
+    if (!chatbotMessages) return;
+
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', `${sender}-message`);
     messageDiv.textContent = text;
@@ -92,6 +105,8 @@ const addMessage = (text, sender) => {
 };
 
 const addTypingIndicator = () => {
+    if (!chatbotMessages) return;
+
     const typingDiv = document.createElement('div');
     typingDiv.classList.add('message', 'bot-message', 'typing');
     typingDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
@@ -105,8 +120,16 @@ const fetchGeminiResponse = async (userMessage) => {
         throw new Error('Gemini API kaliti topilmadi');
     }
 
-    const response = await fetch('data.json');
-    const data = await response.json();
+    let data;
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) {
+            throw new Error(`data.json yuklashda xato: ${response.status}`);
+        }
+        data = await response.json();
+    } catch (error) {
+        throw new Error(`data.json yuklashda xato: ${error.message}`);
+    }
 
     const prompt = `
     Siz Dilshod Sayfiddinov haqida ma'lumot beruvchi AI yordamchisisiz. 
@@ -114,12 +137,12 @@ const fetchGeminiResponse = async (userMessage) => {
 
     ISM: Dilshod Sayfiddinov
     LAVOZIM: Frontend Developer
-    TAJRIBA: ${data.about.stats[0].value} oylik tajriba
-    VIBE CODING: ${data.skills.find(skill => skill.isSpecial).level} mustaqil ravishda Vibe Coding  bilan shug'ullangan
-    KO'NIKMALAR: ${data.skills.map(skill => `${skill.name} (${skill.level}${skill.isSpecial ? '' : '%'})`).join(', ')}
+    TAJRIBA: ${data.about?.stats[0]?.value || 'Noma\'lum'} oylik tajriba
+    VIBE CODING: ${data.skills?.find(skill => skill.isSpecial)?.level || 'Noma\'lum'} mustaqil ravishda Vibe Coding bilan shug'ullangan
+    KO'NIKMALAR: ${data.skills?.map(skill => `${skill.name} (${skill.level}${skill.isSpecial ? '' : '%'})`).join(', ') || 'Noma\'lum'}
     LOYIHALAR:
-    ${data.projects.map(project => `- ${project.title}: ${project.url}`).join('\n')}
-    BOG'LANISH: Telegram - ${data.contact.telegram.username}
+    ${data.projects?.map(project => `- ${project.title}: ${project.url}`).join('\n') || 'Noma\'lum'}
+    BOG'LANISH: Telegram - ${data.contact?.telegram?.username || 'Noma\'lum'}
 
     Savolga javob bering, lekin faqat yuqoridagi ma'lumotlar doirasida qoling. 
     Agar savol ushbu ma'lumotlar doirasida bo'lmasa, "Kechirasiz, men faqat Dilshod haqidagi ma'lumotlar bilan chegaralanganman" deb javob bering.
@@ -147,132 +170,151 @@ const fetchGeminiResponse = async (userMessage) => {
 
     const apiData = await apiResponse.json();
     
-    if (apiData.candidates && apiData.candidates[0] && apiData.candidates[0].content) {
+    if (apiData.candidates && apiData.candidates[0] && apiData.candidates[0].content && apiData.candidates[0].content.parts && apiData.candidates[0].content.parts[0]) {
         return apiData.candidates[0].content.parts[0].text;
     } else {
         throw new Error('API javobi kutilgan formatda emas');
     }
 };
 
-sendMessage.addEventListener('click', sendChatMessage);
-chatbotInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        sendChatMessage();
-    }
-});
+if (sendMessage && chatbotInput) {
+    sendMessage.addEventListener('click', sendChatMessage);
+    chatbotInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
+}
 
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(10, 10, 10, 0.95)';
-        navbar.style.backdropFilter = 'blur(15px)';
-    } else {
-        navbar.style.background = 'rgba(10, 10, 10, 0.9)';
-        navbar.style.backdropFilter = 'blur(10px)';
+    if (navbar) {
+        if (window.scrollY > 100) {
+            navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+            navbar.style.backdropFilter = 'blur(15px)';
+        } else {
+            navbar.style.background = 'rgba(10, 10, 10, 0.9)';
+            navbar.style.backdropFilter = 'blur(10px)';
+        }
     }
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const loadingScreen = document.getElementById('loadingScreen');
-    const mainContent = document.getElementById('mainContent');
+    if (!loadingScreen || !mainContent) {
+        console.error('Loading screen yoki main content elementi topilmadi');
+        return;
+    }
 
     try {
         const response = await fetch('data.json');
+        if (!response.ok) {
+            throw new Error(`data.json yuklashda xato: ${response.status}`);
+        }
         const data = await response.json();
 
         // About Section
         const aboutText = document.querySelector('.about-text');
-        data.about.text.forEach(text => {
-            const p = document.createElement('p');
-            p.innerHTML = text;
-            aboutText.appendChild(p);
-        });
+        if (aboutText && data.about?.text) {
+            data.about.text.forEach(text => {
+                const p = document.createElement('p');
+                p.innerHTML = text;
+                aboutText.appendChild(p);
+            });
+        }
 
         const aboutStats = document.getElementById('about-stats');
-        data.about.stats.forEach(stat => {
-            const statCard = document.createElement('div');
-            statCard.classList.add('stat-card');
-            statCard.innerHTML = `
-                <h3>${stat.value}</h3>
-                <p>${stat.label}</p>
-            `;
-            aboutStats.appendChild(statCard);
-        });
+        if (aboutStats && data.about?.stats) {
+            data.about.stats.forEach(stat => {
+                const statCard = document.createElement('div');
+                statCard.classList.add('stat-card');
+                statCard.innerHTML = `
+                    <h3>${stat.value}</h3>
+                    <p>${stat.label}</p>
+                `;
+                aboutStats.appendChild(statCard);
+            });
+        }
 
         // Skills Section
         const skillsGrid = document.getElementById('skills-grid');
-        data.skills.forEach(skill => {
-            const skillCard = document.createElement('div');
-            skillCard.classList.add('skill-card');
-            if (skill.isSpecial) {
-                skillCard.classList.add('special-card');
-                skillCard.innerHTML = `
-                    <div class="skill-header">
-                        <h3>${skill.name}</h3>
-                        <span>${skill.level}</span>
-                    </div>
-                    <div class="vibe-badge">
-                        <i class="fas fa-star"></i>
-                        <span>2 Yillik Tajriba</span>
-                    </div>
-                `;
-            } else {
-                skillCard.innerHTML = `
-                    <div class="skill-header">
-                        <h3>${skill.name}</h3>
-                        <span>${skill.level}%</span>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-progress" data-width="${skill.level}"></div>
-                    </div>
-                `;
-            }
-            skillsGrid.appendChild(skillCard);
-        });
+        if (skillsGrid && data.skills) {
+            data.skills.forEach(skill => {
+                const skillCard = document.createElement('div');
+                skillCard.classList.add('skill-card');
+                if (skill.isSpecial) {
+                    skillCard.classList.add('special-card');
+                    skillCard.innerHTML = `
+                        <div class="skill-header">
+                            <h3>${skill.name}</h3>
+                            <span>${skill.level}</span>
+                        </div>
+                        <div class="vibe-badge">
+                            <i class="fas fa-star"></i>
+                            <span>2 Yillik Tajriba</span>
+                        </div>
+                    `;
+                } else {
+                    skillCard.innerHTML = `
+                        <div class="skill-header">
+                            <h3>${skill.name}</h3>
+                            <span>${skill.level}%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="${skill.level}"></div>
+                        </div>
+                    `;
+                }
+                skillsGrid.appendChild(skillCard);
+            });
+        }
 
         // Projects Section
         const projectsGrid = document.getElementById('projects-grid');
-        data.projects.forEach(project => {
-            const projectCard = document.createElement('div');
-            projectCard.classList.add('project-card');
-            projectCard.innerHTML = `
-                <div class="project-inner">
-                    <div class="project-front">
-                        <div class="project-image">
-                            <img src="${project.image}" alt="${project.title}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWYxZjJmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPi${btoa(project.title)}</3RleHQ+PC9zdmc+'">
+        if (projectsGrid && data.projects) {
+            data.projects.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.classList.add('project-card');
+                projectCard.innerHTML = `
+                    <div class="project-inner">
+                        <div class="project-front">
+                            <div class="project-image">
+                                <img src="${project.image}" alt="${project.title}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWYxZjJmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPi${btoa(project.title)}</3RleHQ+PC9zdmc+'">
+                            </div>
+                            <div class="project-info">
+                                <h3>${project.title}</h3>
+                                <p>${project.description}</p>
+                                <div class="project-tech">
+                                    ${project.technologies.map(tech => `<span>${tech}</span>`).join('')}
+                                </div>
+                            </div>
                         </div>
-                        <div class="project-info">
+                        <div class="project-back">
                             <h3>${project.title}</h3>
-                            <p>${project.description}</p>
-                            <div class="project-tech">
-                                ${project.technologies.map(tech => `<span>${tech}</span>`).join('')}
+                            <p>${project.detailedDescription}</p>
+                            <div class="project-links">
+                                <a href="${project.url}" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Ko'rish
+                                </a>
                             </div>
                         </div>
                     </div>
-                    <div class="project-back">
-                        <h3>${project.title}</h3>
-                        <p>${project.detailedDescription}</p>
-                        <div class="project-links">
-                            <a href="${project.url}" target="_blank" class="project-link">
-                                <i class="fas fa-external-link-alt"></i>
-                                Ko'rish
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            `;
-            projectsGrid.appendChild(projectCard);
-        });
+                `;
+                projectsGrid.appendChild(projectCard);
+            });
+        }
 
         // Contact Section
         const contactContent = document.getElementById('contact-content');
-        contactContent.innerHTML = `
-            <p class="contact-description">${data.contact.description}</p>
-            <a href="${data.contact.telegram.url}" target="_blank" class="telegram-button">
-                <i class="fab fa-telegram"></i>
-                Telegram: ${data.contact.telegram.username}
-            </a>
-        `;
+        if (contactContent && data.contact) {
+            contactContent.innerHTML = `
+                <p class="contact-description">${data.contact.description}</p>
+                <a href="${data.contact.telegram.url}" target="_blank" class="telegram-button">
+                    <i class="fab fa-telegram"></i>
+                    Telegram: ${data.contact.telegram.username}
+                </a>
+            `;
+        }
 
         // Hide loading screen and show main content
         loadingScreen.style.display = 'none';
@@ -280,7 +322,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         animateSkillBars();
     } catch (error) {
         console.error('Ma\'lumotlarni yuklashda xatolik:', error);
-        // Show error message if JSON loading fails
         loadingScreen.innerHTML = `
             <div class="loading-content">
                 <img src="./images/favicon.png" alt="Dilshod Logo" class="loading-logo">
@@ -288,9 +329,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
     }
-<<<<<<< HEAD
 
-    // Existing styles for typing indicator
+    // Add styles for typing indicator
     const style = document.createElement('style');
     style.textContent = `
         .typing-dots {
@@ -313,6 +353,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
     document.head.appendChild(style);
 
+    // Handle project image errors
     document.querySelectorAll('.project-image img').forEach(img => {
         img.addEventListener('error', function() {
             this.style.display = 'none';
@@ -336,6 +377,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 });
-=======
-});
->>>>>>> 6dc38d2351b647aa282635d535baac15636632a7
