@@ -60,7 +60,7 @@ const chatbotMessages = document.getElementById('chatbotMessages');
 const chatbotInput = document.getElementById('chatbotInput');
 const sendMessage = document.getElementById('sendMessage');
 
-const GEMINI_API_KEY = 'AIzaSyDFDKwoblxAmd7DOwVEQppqvbNehq9QWYo'; // Apiga tegingan ko't
+const GEMINI_API_KEY = ''; 
 
 if (chatbotToggle && chatbotWindow && closeChatbot) {
     chatbotToggle.addEventListener('click', () => {
