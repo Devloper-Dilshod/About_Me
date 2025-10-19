@@ -8,7 +8,7 @@ if (navToggle && navMenu) {
         navMenu.classList.toggle('active');
         navToggle.classList.toggle('active');
     });
-
+    
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             navMenu.classList.remove('active');
@@ -36,7 +36,7 @@ const animateSkillBars = () => {
     const skillsSection = document.querySelector('.skills');
     
     if (!skillsSection || !skillBars.length) return;
-
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -66,7 +66,7 @@ if (chatbotToggle && chatbotWindow && closeChatbot) {
     chatbotToggle.addEventListener('click', () => {
         chatbotWindow.classList.toggle('active');
     });
-
+    
     closeChatbot.addEventListener('click', () => {
         chatbotWindow.classList.remove('active');
     });
@@ -74,15 +74,15 @@ if (chatbotToggle && chatbotWindow && closeChatbot) {
 
 const sendChatMessage = async () => {
     if (!chatbotInput || !chatbotMessages) return;
-
+    
     const message = chatbotInput.value.trim();
     if (!message) return;
-
+    
     addMessage(message, 'user');
     chatbotInput.value = '';
-
+    
     const typingIndicator = addTypingIndicator();
-
+    
     try {
         const response = await fetchGeminiResponse(message);
         typingIndicator.remove();
@@ -96,7 +96,7 @@ const sendChatMessage = async () => {
 
 const addMessage = (text, sender) => {
     if (!chatbotMessages) return;
-
+    
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', `${sender}-message`);
     messageDiv.textContent = text;
@@ -106,7 +106,7 @@ const addMessage = (text, sender) => {
 
 const addTypingIndicator = () => {
     if (!chatbotMessages) return;
-
+    
     const typingDiv = document.createElement('div');
     typingDiv.classList.add('message', 'bot-message', 'typing');
     typingDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
@@ -119,7 +119,7 @@ const fetchGeminiResponse = async (userMessage) => {
     if (!GEMINI_API_KEY) {
         throw new Error('Gemini API kaliti topilmadi');
     }
-
+    
     let data;
     try {
         const response = await fetch('data.json');
@@ -130,11 +130,11 @@ const fetchGeminiResponse = async (userMessage) => {
     } catch (error) {
         throw new Error(`data.json yuklashda xato: ${error.message}`);
     }
-
+    
     const prompt = `
     Siz Dilshod Sayfiddinov haqida ma'lumot beruvchi AI yordamchisisiz. 
     Faqat quyidagi ma'lumotlar asosida javob bering:
-
+    
     ISM: Dilshod Sayfiddinov
     LAVOZIM: Frontend Developer
     TAJRIBA: ${data.about?.stats[0]?.value || 'Noma\'lum'} oylik tajriba
@@ -143,13 +143,13 @@ const fetchGeminiResponse = async (userMessage) => {
     LOYIHALAR:
     ${data.projects?.map(project => `- ${project.title}: ${project.url}`).join('\n') || 'Noma\'lum'}
     BOG'LANISH: Telegram - ${data.contact?.telegram?.username || 'Noma\'lum'}
-
+    
     Savolga javob bering, lekin faqat yuqoridagi ma'lumotlar doirasida qoling. 
     Agar savol ushbu ma'lumotlar doirasida bo'lmasa, "Kechirasiz, men faqat Dilshod haqidagi ma'lumotlar bilan chegaralanganman" deb javob bering.
-
+    
     Savol: ${userMessage}
     `;
-
+    
     const apiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
@@ -163,11 +163,11 @@ const fetchGeminiResponse = async (userMessage) => {
             }]
         })
     });
-
+    
     if (!apiResponse.ok) {
         throw new Error(`API so'rovi muvaffaqiyatsiz: ${apiResponse.status}`);
     }
-
+    
     const apiData = await apiResponse.json();
     
     if (apiData.candidates && apiData.candidates[0] && apiData.candidates[0].content && apiData.candidates[0].content.parts && apiData.candidates[0].content.parts[0]) {
@@ -204,14 +204,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Loading screen yoki main content elementi topilmadi');
         return;
     }
-
+    
     try {
         const response = await fetch('data.json');
         if (!response.ok) {
             throw new Error(`data.json yuklashda xato: ${response.status}`);
         }
         const data = await response.json();
-
+        
         // About Section
         const aboutText = document.querySelector('.about-text');
         if (aboutText && data.about?.text) {
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 aboutText.appendChild(p);
             });
         }
-
+        
         const aboutStats = document.getElementById('about-stats');
         if (aboutStats && data.about?.stats) {
             data.about.stats.forEach(stat => {
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 aboutStats.appendChild(statCard);
             });
         }
-
+        
         // Skills Section
         const skillsGrid = document.getElementById('skills-grid');
         if (skillsGrid && data.skills) {
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 skillsGrid.appendChild(skillCard);
             });
         }
-
+        
         // Projects Section
         const projectsGrid = document.getElementById('projects-grid');
         if (projectsGrid && data.projects) {
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 projectsGrid.appendChild(projectCard);
             });
         }
-
+        
         // Contact Section
         const contactContent = document.getElementById('contact-content');
         if (contactContent && data.contact) {
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </a>
             `;
         }
-
+        
         // Hide loading screen and show main content
         loadingScreen.style.display = 'none';
         mainContent.style.display = 'block';
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
     }
-
+    
     // Add styles for typing indicator
     const style = document.createElement('style');
     style.textContent = `
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     `;
     document.head.appendChild(style);
-
+    
     // Handle project image errors
     document.querySelectorAll('.project-image img').forEach(img => {
         img.addEventListener('error', function() {
