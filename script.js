@@ -104,7 +104,6 @@ const loadDataAndRenderPage = async () => {
                         <div class="skill-bar">
                             <div class="skill-progress" data-level="${levelValue}"></div>
                         </div>
-                        ${isSpecial ? `<p class="mt-2 text-center text-gray-400">Bu mening kodlash falsafam. Tezkorlik va sifat. 🚀</p>` : ''}
                     </div>
                 `;
             }).join('');
