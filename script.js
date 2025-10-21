@@ -133,9 +133,6 @@ const loadDataAndRenderPage = async () => {
                                 <a href="${project.url}" target="_blank" class="project-link">
                                     <i class="fas fa-eye"></i> Ko'rish
                                 </a>
-                                <a href="mailto:example@domain.com" class="project-link">
-                                    <i class="fas fa-code"></i> Kod (Maxfiy)
-                                </a>
                             </div>
                         </div>
                     </div>
