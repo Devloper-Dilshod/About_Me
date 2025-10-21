@@ -104,6 +104,7 @@ const loadDataAndRenderPage = async () => {
                         <div class="skill-bar">
                             <div class="skill-progress" data-level="${levelValue}"></div>
                         </div>
+
                     </div>
                 `;
             }).join('');
@@ -132,6 +133,7 @@ const loadDataAndRenderPage = async () => {
                                 <a href="${project.url}" target="_blank" class="project-link">
                                     <i class="fas fa-eye"></i> Ko'rish
                                 </a>
+
                             </div>
                         </div>
                     </div>
