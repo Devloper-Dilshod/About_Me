@@ -69,7 +69,7 @@ const animateSkillBars = () => {
 const loadDataAndRenderPage = async () => {
     let data;
     try {
-        const response = await fetch('./data.json'); 
+        const response = await fetch('data.json'); 
         
         if (!response.ok) {
             throw new Error(`HTTP Xato: ${response.status} ${response.statusText}`);
@@ -271,7 +271,7 @@ const fetchGeminiResponse = async (userMessage) => {
     let data;
     try {
         // ./ dan foydalanamiz, bu fayl yo'lining aniq ekanligini ta'minlaydi
-        const response = await fetch('./data.json'); 
+        const response = await fetch('data.json'); 
         
         if (!response.ok) {
             throw new Error(`data.json yuklashda HTTP xato: ${response.status} ${response.statusText}`);
