@@ -41,170 +41,134 @@ const animateSkillBars = () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 skillBars.forEach(bar => {
-                    const width = bar.getAttribute('data-width');
-                    if (width) {
-                        bar.style.width = width + '%';
-                    }
+                    const level = bar.getAttribute('data-level');
+                    bar.style.width = level + '%';
                 });
+                observer.unobserve(skillsSection); // Stop observing after animation
             }
         });
-    }, { threshold: 0.5 });
-    
+    }, {
+        threshold: 0.1
+    });
+
     observer.observe(skillsSection);
 };
+
+
+// --------------------------------------------------------
+// YANGILANGAN CHATBOT MANTIQI (API KEY XAVFSIZLIGI UCHUN)
+// --------------------------------------------------------
 
 const chatbotToggle = document.getElementById('chatbotToggle');
 const chatbotWindow = document.getElementById('chatbotWindow');
 const closeChatbot = document.getElementById('closeChatbot');
 const chatbotMessages = document.getElementById('chatbotMessages');
 const chatbotInput = document.getElementById('chatbotInput');
-const sendMessage = document.getElementById('sendMessage');
+const sendMessageButton = document.getElementById('sendMessage');
+let isChatbotOpen = false; // Chatbot holatini kuzatish
 
-const GEMINI_API_KEY = 'AIzaSyDFDKwoblxAmd7DOwVEQppqvbNehq9QWYo';
-
-if (chatbotToggle && chatbotWindow && closeChatbot) {
-    chatbotToggle.addEventListener('click', () => {
-        chatbotWindow.classList.toggle('active');
-    });
+if (chatbotToggle && chatbotWindow && closeChatbot && chatbotMessages && chatbotInput && sendMessageButton) {
     
+    chatbotToggle.addEventListener('click', () => {
+        isChatbotOpen = !isChatbotOpen;
+        chatbotWindow.classList.toggle('active', isChatbotOpen);
+        chatbotToggle.classList.toggle('active', isChatbotOpen);
+        // Oynani ochganda input fokusni berish
+        if (isChatbotOpen) {
+            chatbotInput.focus();
+        }
+    });
+
     closeChatbot.addEventListener('click', () => {
+        isChatbotOpen = false;
         chatbotWindow.classList.remove('active');
+        chatbotToggle.classList.remove('active');
+    });
+
+    sendMessageButton.addEventListener('click', () => {
+        handleUserInput();
+    });
+
+    chatbotInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleUserInput();
+        }
     });
 }
 
-const sendChatMessage = async () => {
-    if (!chatbotInput || !chatbotMessages) return;
-    
-    const message = chatbotInput.value.trim();
-    if (!message) return;
-    
-    addMessage(message, 'user');
-    chatbotInput.value = '';
-    
-    const typingIndicator = addTypingIndicator();
-    
-    try {
-        const response = await fetchGeminiResponse(message);
-        typingIndicator.remove();
-        addMessage(response, 'bot');
-    } catch (error) {
-        typingIndicator.remove();
-        addMessage('Kechirasiz, xatolik yuz berdi. Iltimos, keyinroq urinib ko\'ring.', 'bot');
-        console.error('Chatbot error:', error);
-    }
-};
-
 const addMessage = (text, sender) => {
-    if (!chatbotMessages) return;
-    
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', `${sender}-message`);
-    messageDiv.textContent = text;
+    messageDiv.innerHTML = text; // HTMLni qo'llab-quvvatlaydi, masalan, yozish animatsiyasi
     chatbotMessages.appendChild(messageDiv);
-    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Pastga tushirish
+    return messageDiv;
 };
 
-const addTypingIndicator = () => {
-    if (!chatbotMessages) return;
-    
+const showTypingIndicator = () => {
     const typingDiv = document.createElement('div');
-    typingDiv.classList.add('message', 'bot-message', 'typing');
-    typingDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    typingDiv.classList.add('message', 'bot-message', 'typing-indicator');
+    typingDiv.innerHTML = `
+        <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
     chatbotMessages.appendChild(typingDiv);
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     return typingDiv;
 };
 
-const fetchGeminiResponse = async (userMessage) => {
-    if (!GEMINI_API_KEY) {
-        throw new Error('Gemini API kaliti topilmadi');
-    }
-    
-    let data;
-    try {
-        const response = await fetch('data.json');
-        if (!response.ok) {
-            throw new Error(`data.json yuklashda xato: ${response.status}`);
-        }
-        data = await response.json();
-    } catch (error) {
-        throw new Error(`data.json yuklashda xato: ${error.message}`);
-    }
-    
-    const prompt = `
-    Siz Dilshod Sayfiddinov haqida ma'lumot beruvchi AI yordamchisisiz. 
-    Faqat quyidagi ma'lumotlar asosida javob bering:
-    
-    ISM: Dilshod Sayfiddinov
-    LAVOZIM: Frontend Developer
-    TAJRIBA: ${data.about?.stats[0]?.value || 'Noma\'lum'} oylik tajriba
-    VIBE CODING: ${data.skills?.find(skill => skill.isSpecial)?.level || 'Noma\'lum'} mustaqil ravishda Vibe Coding bilan shug'ullangan
-    KO'NIKMALAR: ${data.skills?.map(skill => `${skill.name} (${skill.level}${skill.isSpecial ? '' : '%'})`).join(', ') || 'Noma\'lum'}
-    LOYIHALAR:
-    ${data.projects?.map(project => `- ${project.title}: ${project.url}`).join('\n') || 'Noma\'lum'}
-    BOG'LANISH: Telegram - ${data.contact?.telegram?.username || 'Noma\'lum'}
-    
-    Savolga javob bering, lekin faqat yuqoridagi ma'lumotlar doirasida qoling. 
-    Agar savol ushbu ma'lumotlar doirasida bo'lmasa, "Kechirasiz, men faqat Dilshod haqidagi ma'lumotlar bilan chegaralanganman" deb javob bering.
-    
-    Savol: ${userMessage}
-    `;
-    
-    const apiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            contents: [{
-                parts: [{
-                    text: prompt
-                }]
-            }]
-        })
-    });
-    
-    if (!apiResponse.ok) {
-        throw new Error(`API so'rovi muvaffaqiyatsiz: ${apiResponse.status}`);
-    }
-    
-    const apiData = await apiResponse.json();
-    
-    if (apiData.candidates && apiData.candidates[0] && apiData.candidates[0].content && apiData.candidates[0].content.parts && apiData.candidates[0].content.parts[0]) {
-        return apiData.candidates[0].content.parts[0].text;
-    } else {
-        throw new Error('API javobi kutilgan formatda emas');
+const removeTypingIndicator = (indicatorDiv) => {
+    if (indicatorDiv) {
+        indicatorDiv.remove();
     }
 };
 
-if (sendMessage && chatbotInput) {
-    sendMessage.addEventListener('click', sendChatMessage);
-    chatbotInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendChatMessage();
-        }
-    });
-}
+const handleUserInput = async () => {
+    const userMessage = chatbotInput.value.trim();
+    if (userMessage === '') return;
 
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
-        if (window.scrollY > 100) {
-            navbar.style.background = 'rgba(10, 10, 10, 0.95)';
-            navbar.style.backdropFilter = 'blur(15px)';
-        } else {
-            navbar.style.background = 'rgba(10, 10, 10, 0.9)';
-            navbar.style.backdropFilter = 'blur(10px)';
-        }
-    }
-});
+    // 1. Foydalanuvchi xabarini ko'rsatish
+    addMessage(userMessage, 'user');
+    chatbotInput.value = '';
+    
+    // Yuborish tugmasi va inputni vaqtincha o'chirish
+    sendMessageButton.disabled = true;
+    chatbotInput.disabled = true;
 
-document.addEventListener('DOMContentLoaded', async () => {
-    if (!loadingScreen || !mainContent) {
-        console.error('Loading screen yoki main content elementi topilmadi');
-        return;
+    // 2. Yozish indikatorini ko'rsatish
+    const typingIndicator = showTypingIndicator();
+
+    try {
+        // 3. Javobni serverless funksiyadan olish
+        const botResponseText = await fetchGeminiResponse(userMessage);
+
+        // 4. Yozish indikatorini olib tashlash va javobni ko'rsatish
+        removeTypingIndicator(typingIndicator);
+        addMessage(botResponseText, 'bot');
+        
+    } catch (error) {
+        console.error('Chatbot xatosi:', error);
+        removeTypingIndicator(typingIndicator);
+        addMessage(`Kechirasiz, xatolik yuz berdi: ${error.message}`, 'bot');
     }
     
+    // Yuborish tugmasi va inputni yana ishga tushirish
+    sendMessageButton.disabled = false;
+    chatbotInput.disabled = false;
+    chatbotInput.focus();
+};
+
+// --------------------------------------------------------
+// XAVFSIZ API CHAQIRUV FUNKSIYASI (API KEY YO'Q)
+// --------------------------------------------------------
+
+const fetchGeminiResponse = async (userMessage) => {
+    
+    // 1. data.json ma'lumotlarini olish (Serverga yuborish uchun)
+    let dataJson;
     try {
         const response = await fetch('data.json');
         if (!response.ok) {
@@ -212,130 +176,119 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const data = await response.json();
         
-        // About Section
-        const aboutText = document.querySelector('.about-text');
-        if (aboutText && data.about?.text) {
-            data.about.text.forEach(text => {
-                const p = document.createElement('p');
-                p.innerHTML = text;
-                aboutText.appendChild(p);
-            });
-        }
+        // Serverdagi Prompt uchun ma'lumotni formatlash (data.json tarkibiga asoslanib)
         
-        const aboutStats = document.getElementById('about-stats');
-        if (aboutStats && data.about?.stats) {
-            data.about.stats.forEach(stat => {
-                const statCard = document.createElement('div');
-                statCard.classList.add('stat-card');
-                statCard.innerHTML = `
-                    <h3>${stat.value}</h3>
-                    <p>${stat.label}</p>
-                `;
-                aboutStats.appendChild(statCard);
-            });
-        }
+        // Loyihalarni formatlash
+        const projectsList = data.projects 
+            ? data.projects.map(project => `- ${project.title}: ${project.url} (${project.description})`).join('\n') 
+            : 'Loyihalar haqida ma\'lumot yo\'q.';
+
+        // Ko'nikmalarni formatlash
+        const skillsList = data.skills 
+            ? data.skills.map(skill => `${skill.name} (${skill.level}${skill.isSpecial ? '' : '%'})`).join(', ') 
+            : 'Ko\'nikmalar ro\'yxati yo\'q.';
+            
+        // Kontakt ma'lumotlarini formatlash
+        const contactInfo = `
+            Telegram: ${data.contact?.telegram?.username || 'Noma\'lum'}
+            Email: ${data.contact?.email || 'Noma\'lum'}
+        `.trim().replace(/\n\s+/g, '\n');
+
         
-        // Skills Section
-        const skillsGrid = document.getElementById('skills-grid');
-        if (skillsGrid && data.skills) {
-            data.skills.forEach(skill => {
-                const skillCard = document.createElement('div');
-                skillCard.classList.add('skill-card');
-                if (skill.isSpecial) {
-                    skillCard.classList.add('special-card');
-                    skillCard.innerHTML = `
-                        <div class="skill-header">
-                            <h3>${skill.name}</h3>
-                            <span>${skill.level}</span>
-                        </div>
-                        <div class="vibe-badge">
-                            <i class="fas fa-star"></i>
-                            <span>2 Yillik Tajriba</span>
-                        </div>
-                    `;
-                } else {
-                    skillCard.innerHTML = `
-                        <div class="skill-header">
-                            <h3>${skill.name}</h3>
-                            <span>${skill.level}%</span>
-                        </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="${skill.level}"></div>
-                        </div>
-                    `;
-                }
-                skillsGrid.appendChild(skillCard);
-            });
-        }
+        const profileDataToSend = {
+            ISM: 'Dilshod Sayfiddinov',
+            LAVOZIM: 'Frontend Developer',
+            // .stats arraydan 0-elementni olishga harakat qilamiz
+            TAJRIBA: data.about?.stats?.[0]?.value ? `${data.about.stats[0].value} Oylik Tajriba` : 'Noma\'lum',
+            VIBE_CODING: data.skills?.find(skill => skill.isSpecial)?.level || 'Noma\'lum',
+            KO_NIKMALAR: skillsList,
+            LOYIHALAR: projectsList,
+            BOG_LANISH: contactInfo
+        };
+
+        // Bu JSON stringini serverga yuboramiz. Server buni qayta obyektga aylantiradi.
+        dataJson = JSON.stringify(profileDataToSend, null, 2); 
         
-        // Projects Section
-        const projectsGrid = document.getElementById('projects-grid');
-        if (projectsGrid && data.projects) {
-            data.projects.forEach(project => {
-                const projectCard = document.createElement('div');
-                projectCard.classList.add('project-card');
-                projectCard.innerHTML = `
-                    <div class="project-inner">
-                        <div class="project-front">
-                            <div class="project-image">
-                                <img src="${project.image}" alt="${project.title}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWYxZjJmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPi${btoa(project.title)}</3RleHQ+PC9zdmc+'">
-                            </div>
-                            <div class="project-info">
-                                <h3>${project.title}</h3>
-                                <p>${project.description}</p>
-                                <div class="project-tech">
-                                    ${project.technologies.map(tech => `<span>${tech}</span>`).join('')}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-back">
-                            <h3>${project.title}</h3>
-                            <p>${project.detailedDescription}</p>
-                            <div class="project-links">
-                                <a href="${project.url}" target="_blank" class="project-link">
-                                    <i class="fas fa-external-link-alt"></i>
-                                    Ko'rish
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                projectsGrid.appendChild(projectCard);
-            });
-        }
-        
-        // Contact Section
-        const contactContent = document.getElementById('contact-content');
-        if (contactContent && data.contact) {
-            contactContent.innerHTML = `
-                <p class="contact-description">${data.contact.description}</p>
-                <a href="${data.contact.telegram.url}" target="_blank" class="telegram-button">
-                    <i class="fab fa-telegram"></i>
-                    Telegram: ${data.contact.telegram.username}
-                </a>
-            `;
-        }
-        
-        // Hide loading screen and show main content
-        loadingScreen.style.display = 'none';
-        mainContent.style.display = 'block';
-        animateSkillBars();
     } catch (error) {
-        console.error('Ma\'lumotlarni yuklashda xatolik:', error);
-        loadingScreen.innerHTML = `
-            <div class="loading-content">
-                <img src="./images/favicon.png" alt="Dilshod Logo" class="loading-logo">
-                <p>Xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.</p>
-            </div>
-        `;
+        throw new Error(`Ma'lumotlarni tayyorlashda xato: ${error.message}`);
     }
     
-    // Add styles for typing indicator
+    // 2. O'zimizning Serverless Function'ga (Vercel API Route) so'rov yuboramiz
+    // API kaliti ushbu qismda ishlatilmaydi, u serverda xavfsiz qoladi.
+    const apiResponse = await fetch('/api/chat', { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            userMessage: userMessage, 
+            dataJson: dataJson      
+        })
+    });
+    
+    if (!apiResponse.ok) {
+        // Xatolik ma'lumotlarini olishga harakat qilish
+        let errorData = {};
+        try {
+            errorData = await apiResponse.json();
+        } catch (e) {
+            // Agar JSON formatida bo'lmasa, statusni ko'rsatish
+            throw new Error(`Server API so'rovi muvaffaqiyatsiz: ${apiResponse.status} - Serverdan noto'g'ri javob formati.`);
+        }
+        
+        throw new Error(`Server API so'rovi muvaffaqiyatsiz: ${apiResponse.status} - ${errorData.error || errorData.message || 'Noma\'lum xato'}`);
+    }
+    
+    const apiData = await apiResponse.json();
+    
+    if (apiData.response) {
+        return apiData.response; // Serverdan kelgan AI javobi
+    } else {
+        throw new Error(apiData.error || 'Serverdan kutilgan javob olinmadi');
+    }
+};
+
+
+// --------------------------------------------------------
+// Qolgan Yordamchi Funksiyalar
+// --------------------------------------------------------
+
+// DOMContentLoaded is triggered when the initial HTML document has been completely loaded and parsed
+document.addEventListener('DOMContentLoaded', () => {
+    // Skills animation setup
+    animateSkillBars(); 
+    
+    // Loading screen logic
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            loadingScreen.classList.add('fade-out');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                // Trigger skill bar animation again just in case the observer missed it on fast load
+                animateSkillBars();
+            }, 500); // Must match CSS transition time
+        }, 500); // Minimum time the loading screen is visible
+    });
+    
+    // Project image error handling setup
+    handleProjectImageErrors();
+});
+
+
+// Add CSS for typing indicator dynamically (Keeping existing logic)
+const addTypingIndicatorStyles = () => {
     const style = document.createElement('style');
-    style.textContent = `
+    style.innerHTML = `
+        .typing-indicator {
+            background-color: var(--darker-bg) !important;
+            color: var(--text-light) !important;
+        }
         .typing-dots {
-            display: flex;
+            display: inline-flex;
             gap: 4px;
+            align-items: center;
+            height: 100%;
         }
         .typing-dots span {
             width: 8px;
@@ -352,8 +305,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     `;
     document.head.appendChild(style);
-    
-    // Handle project image errors
+};
+
+// Handle project image errors (Keeping existing logic)
+const handleProjectImageErrors = () => {
     document.querySelectorAll('.project-image img').forEach(img => {
         img.addEventListener('error', function() {
             this.style.display = 'none';
@@ -368,12 +323,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 justify-content: center;
                 color: white;
                 font-weight: bold;
-                font-size: 1.2rem;
+                font-size: 0.9rem;
+                border-radius: 8px;
+                padding: 10px;
                 text-align: center;
-                padding: 1rem;
             `;
-            placeholder.textContent = this.alt;
+            placeholder.textContent = this.closest('.project-card').querySelector('h3').textContent;
             parent.appendChild(placeholder);
         });
     });
-});
+}
+
+// Initial calls
+addTypingIndicatorStyles();
+// handleProjectImageErrors() endi DOMContentLoaded ichida chaqiriladi
