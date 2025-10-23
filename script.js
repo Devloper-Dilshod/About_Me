@@ -41,10 +41,11 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 const animateSkillBars = () => {
     const skillBars = document.querySelectorAll('.skill-progress');
-    const skillsSection = document.querySelector('.skills');
+    const skillsSection = document.querySelector('#skills'); // Section ID'ni aniq qo'yish
     
     if (!skillsSection || !skillBars.length) return;
     
+    // Intersection Observer faqat bir marta animatsiya qilish uchun
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -52,11 +53,11 @@ const animateSkillBars = () => {
                     const level = bar.getAttribute('data-level');
                     bar.style.width = level + '%';
                 });
-                observer.unobserve(skillsSection); // Animationdan keyin kuzatishni to'xtatish
+                observer.unobserve(skillsSection); 
             }
         });
     }, {
-        threshold: 0.1
+        threshold: 0.2 // 20% ko'ringanda animatsiya boshlansin
     });
 
     observer.observe(skillsSection);
@@ -67,7 +68,7 @@ const animateSkillBars = () => {
 // --------------------------------------------------------
 
 const loadDataAndRenderPage = async () => {
-    let data;
+    let data = null;
     try {
         const response = await fetch('data.json'); 
         
@@ -78,7 +79,7 @@ const loadDataAndRenderPage = async () => {
         data = await response.json();
         
         // 1. About sectionni to'ldirish
-        if (data.about) {
+        if (data.about && aboutTextContainer && aboutStatsContainer) {
             aboutTextContainer.innerHTML = data.about.text.map(p => `<p>${p}</p>`).join('');
             aboutStatsContainer.innerHTML = data.about.stats.map(stat => `
                 <div class="stat-card">
@@ -89,11 +90,11 @@ const loadDataAndRenderPage = async () => {
         }
 
         // 2. Skills sectionni to'ldirish
-        if (data.skills) {
+        if (data.skills && skillsGridContainer) {
             skillsGridContainer.innerHTML = data.skills.map(skill => {
                 const isSpecial = skill.isSpecial;
                 const levelDisplay = isSpecial ? skill.level : `${skill.level}%`;
-                const levelValue = isSpecial ? 100 : skill.level; // Maxsus kartani 100% deb tasavvur qilamiz
+                const levelValue = isSpecial ? 100 : skill.level; 
                 
                 return `
                     <div class="skill-card ${isSpecial ? 'special-card' : ''}">
@@ -104,14 +105,13 @@ const loadDataAndRenderPage = async () => {
                         <div class="skill-bar">
                             <div class="skill-progress" data-level="${levelValue}"></div>
                         </div>
-
                     </div>
                 `;
             }).join('');
         }
         
         // 3. Projects sectionni to'ldirish
-        if (data.projects) {
+        if (data.projects && projectsGridContainer) {
             projectsGridContainer.innerHTML = data.projects.map(project => `
                 <div class="project-card">
                     <div class="project-inner">
@@ -133,16 +133,16 @@ const loadDataAndRenderPage = async () => {
                                 <a href="${project.url}" target="_blank" class="project-link">
                                     <i class="fas fa-eye"></i> Ko'rish
                                 </a>
-
                             </div>
                         </div>
                     </div>
                 </div>
             `).join('');
+            handleProjectImageErrors();
         }
 
         // 4. Contact sectionni to'ldirish
-        if (data.contact) {
+        if (data.contact && contactContentContainer) {
             contactContentContainer.innerHTML = `
                 <p class="contact-description">${data.contact.description}</p>
                 <a href="${data.contact.telegram.url}" target="_blank" class="telegram-button">
@@ -150,18 +150,14 @@ const loadDataAndRenderPage = async () => {
                 </a>
             `;
         }
-
-        // Ma'lumotlar yuklangandan so'ng skill barlarni animatsiya qilish
-        animateSkillBars();
-        handleProjectImageErrors();
         
     } catch (error) {
         console.error('Data yuklashda fatal xato:', error);
-        // Agar ma'lumot yuklanmasa, foydalanuvchiga xabar berish (ixtiyoriy)
-        aboutTextContainer.innerHTML = `<p class="text-red-500">Kechirasiz, ma'lumotlarni yuklab bo'lmadi. Iltimos, data.json faylini tekshiring. Xato: ${error.message}</p>`;
-        // Chatbotga xato xabarini ko'rsatish uchun uni o'chirmaymiz, ammo ma'lumotlarni yuklay olmaganimizni bilishimiz kerak.
+        if (aboutTextContainer) {
+            aboutTextContainer.innerHTML = `<p class="text-red-500 text-center">Xatolik: Ma'lumotlarni yuklab bo'lmadi. data.json faylini tekshiring. (Xato: ${error.message})</p>`;
+        }
     }
-    return data;
+    return data; // Ma'lumotlarni chatbot uchun qaytarish
 };
 
 
@@ -255,7 +251,7 @@ const handleUserInput = async () => {
     } catch (error) {
         console.error('Chatbot xatosi:', error);
         removeTypingIndicator(typingIndicator);
-        addMessage(`Kechirasiz, xatolik yuz berdi: ${error.message}`, 'bot');
+        addMessage(`Kechirasiz, xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring. (${error.message})`, 'bot');
     }
     
     sendMessageButton.disabled = false;
@@ -264,60 +260,45 @@ const handleUserInput = async () => {
 };
 
 // --------------------------------------------------------
-// XAVFSIZ API CHAQIRUV FUNKSIYASI
+// XAVFSIZ API CHAQIRUV FUNKSIYASI (Gemini)
 // --------------------------------------------------------
 
 const fetchGeminiResponse = async (userMessage) => {
     
     // 1. data.json ma'lumotlarini olish (Serverga yuborish uchun)
-    let data;
-    try {
-        // ./ dan foydalanamiz, bu fayl yo'lining aniq ekanligini ta'minlaydi
-        const response = await fetch('data.json'); 
-        
-        if (!response.ok) {
-            throw new Error(`data.json yuklashda HTTP xato: ${response.status} ${response.statusText}`);
-        }
-        
-        data = await response.json();
-        
-    } catch (error) {
-        // Yuklashdagi xatoni ushlab, uni Serverless Funksiyaga yubormasdan to'xtatamiz
-        throw new Error(`Ma'lumotlar yuklashda xato. data.json faylini tekshiring. Xato: ${error.message}`); 
+    const data = await loadDataAndRenderPage(); // loadDataAndRenderPage funksiyasi data.json ni qaytaradi
+    
+    if (!data) {
+        throw new Error('Chatbot uchun profil ma\'lumotlari yuklanmadi.');
     }
 
     let dataJson;
     try {
-        // Ma'lumotlarni Serverless Funksiyaga yuborish uchun formatlash
-        
+        // Ma'lumotlarni Serverless Funksiyaga yuborish uchun sodda formatlash
         const projectsList = data.projects 
-            ? data.projects.map(project => `- ${project.title}: ${project.url} (${project.description})`).join('\n') 
+            ? data.projects.map(project => `- ${project.title} | Link: ${project.url}`).join('\n') 
             : 'Loyihalar haqida ma\'lumot yo\'q.';
 
         const skillsList = data.skills 
-            ? data.skills.map(skill => `${skill.name} (${skill.level}${skill.isSpecial ? '' : '%'})`).join(', ') 
+            ? data.skills.map(skill => `${skill.name} (${skill.level}${skill.isSpecial ? ' (Maxsus)' : '%'})`).join(', ') 
             : 'Ko\'nikmalar ro\'yxati yo\'q.';
             
-        const contactInfo = `
-            Telegram: ${data.contact?.telegram?.username || 'Noma\'lum'}
-            Email: ${data.contact?.email || 'Noma\'lum'}
-        `.trim().replace(/\n\s+/g, '\n');
-
+        const contactInfo = `Telegram: ${data.contact?.telegram?.username || 'Noma\'lum'}`;
         
         const profileDataToSend = {
             ISM: 'Dilshod Sayfiddinov',
             LAVOZIM: 'Frontend Developer',
             TAJRIBA: data.about?.stats?.[0]?.value ? `${data.about.stats[0].value} Oylik Tajriba` : 'Noma\'lum',
-            VIBE_CODING: data.skills?.find(skill => skill.isSpecial)?.level || 'Noma\'lum',
+            ASOSIY_MAQSAD: data.about?.text?.[1] || 'Noma\'lum',
             KO_NIKMALAR: skillsList,
             LOYIHALAR: projectsList,
             BOG_LANISH: contactInfo
         };
 
-        dataJson = JSON.stringify(profileDataToSend, null, 2); 
+        dataJson = JSON.stringify(profileDataToSend); 
         
     } catch (error) {
-        throw new Error(`Ma'lumotlarni serverga tayyorlashda xato yuz berdi: ${error.message}`);
+        throw new Error(`Ma'lumotlarni serverga tayyorlashda xato: ${error.message}`);
     }
     
     // 2. O'zimizning Serverless Function'ga so'rov yuboramiz
@@ -328,7 +309,7 @@ const fetchGeminiResponse = async (userMessage) => {
         },
         body: JSON.stringify({
             userMessage: userMessage, 
-            dataJson: dataJson      
+            dataJson: dataJson     
         })
     });
     
@@ -337,7 +318,7 @@ const fetchGeminiResponse = async (userMessage) => {
         try {
             errorData = await apiResponse.json();
         } catch (e) {
-            throw new Error(`Server API so'rovi muvaffaqiyatsiz: ${apiResponse.status}.`);
+            throw new Error(`Server API so'rovi muvaffaqiyatsiz: ${apiResponse.status}. Server javobini o'qib bo'lmadi.`);
         }
         
         throw new Error(`Server API xatosi: ${apiResponse.status} - ${errorData.error || errorData.message || 'Noma\'lum xato'}`);
@@ -348,36 +329,36 @@ const fetchGeminiResponse = async (userMessage) => {
     if (apiData.response) {
         return apiData.response; 
     } else {
-        throw new Error(apiData.error || 'Serverdan kutilgan javob olinmadi');
+        throw new Error(apiData.error || 'Serverdan kutilgan javob olinmadi. Iltimos, Vercel loglarini tekshiring.');
     }
 };
 
 
 // --------------------------------------------------------
-// Qolgan Yordamchi Funksiyalar
+// SAHIFANI YUKLASH MANTIG'I (TUGRI QISM)
 // --------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Sahifani data.json dan ma'lumotlar bilan to'ldirish
+    // data.json ni yuklash va sahifani render qilish
     await loadDataAndRenderPage(); 
     
-    // Loading screen logic
-    window.addEventListener('load', () => {
+    // Loading screen mantig'ini DOMContentLoaded ichiga ko'chiramiz. 
+    // Bu, katta video yuklanishini kutmasdan, ma'lumotlar yuklangandan keyin darhol ochilishini ta'minlaydi.
+    if (loadingScreen && mainContent) {
         setTimeout(() => {
             loadingScreen.classList.add('fade-out');
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
                 mainContent.style.display = 'block';
+                // Skill barlarni animatsiya qilish
                 animateSkillBars();
             }, 500); 
-        }, 500); 
-    });
-    
+        }, 50); // Juda oz kechikish
+    }
 });
 
 
 const addTypingIndicatorStyles = () => {
-    // ... (CSS mantiqini qo'shish) ...
     const style = document.createElement('style');
     style.innerHTML = `
         .typing-indicator {
@@ -433,5 +414,5 @@ const handleProjectImageErrors = () => {
     });
 }
 
-// Initial calls
+// Boshlang'ich chaqiruv
 addTypingIndicatorStyles();
