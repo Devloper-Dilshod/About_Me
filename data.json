@@ -22,6 +22,7 @@
         { "name": "Figma", "level": 75 },
         { "name": "API Integration", "level": 80 },
         { "name": "Responsive Design", "level": 90 },
+        { "name": "AI bilan ishlash", "level": 100 },
         { "name": "Vibe Coding Experience", "level": "2 Years", "isSpecial": true }
     ],
     "projects": [
@@ -50,12 +51,20 @@
             "technologies": ["HTML", "CSS", "JavaScript"]
         },
         {
-            "title": "Uyishichirobot",
-            "description": "Uy ishlarini oson qilib beruvchi telegram bot",
-            "detailedDescription": "Uy ishlarini professioanl darajada qilib beruchi <span class='highlight'>VIBE CODING</span> bilan yaratilgan telegram bot",
-            "image": "./images/uyishichirobot.jpg",
-            "url": "https://t.me/uyishichirobot",
-            "technologies": ["VIBE CODING" , "Python", "API"]
+            "title": "Calory Converter",
+            "description": "Kaloriya konvertori web-ilovasi",
+            "detailedDescription": "Bu ilova foydalanuvchilarga turli oziq-ovqat mahsulotlarining kaloriya miqdorini osonlik bilan hisoblash imkonini beradi. Foydalanuvchi do'stona interfeys va tezkor natijalar bilan.",
+            "image": "./images/calory.jpg",
+            "url": "https://calory-converter-uz.vercel.app",
+            "technologies": ["REACT", "API", "SUPABASE", "TAILWIND"]
+        },
+        {
+            "title": "Online blaknot",
+            "description": "Onlayn xavfsiz blaknot web ilovasi",
+            "detailedDescription": "Bu ilova foydalanuvchilarga o'z eslatmalarini xavfsiz saqlash va istalgan vaqtda ularga kirish imkonini beradi. Foydalanuvchi do'stona interfeys va bulutli saqlash bilan.",
+            "image": "null",
+            "url": "https://ai-image-generator-uz.vercel.app",
+            "technologies": ["REACT", "LocalStorage",  "TAILWIND"]
         },
         {
             "title": "Media Kinochi Bot",
