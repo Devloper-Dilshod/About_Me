@@ -6,7 +6,7 @@
             "Har bir loyihada yangi texnologiyalarni o'rganishga va mukammal natijalarga erishishga intilaman. Mening ishimda diqqat markazida har doim foydalanuvchi tajribasi (UX) turadi."
         ],
         "stats": [
-            { "value": "8", "label": "Oylik Tajriba" },
+            { "value": "9", "label": "Oylik Tajriba" },
             { "value": "30+", "label": "Bajargan Loyihalar" },
             { "value": "100%", "label": "Mijozlar Qoniqishi" }
         ]
@@ -21,7 +21,7 @@
         { "name": "Git & Github", "level": 65 },
         { "name": "Figma", "level": 75 },
         { "name": "API Integration", "level": 80 },
-        { "name": "Responsive Design", "level": 90 },
+        { "name": "Responsive Design", "level": 100 },
         { "name": "AI bilan ishlash", "level": 100 },
         { "name": "Vibe Coding Experience", "level": "2 Years", "isSpecial": true }
     ],
@@ -73,6 +73,14 @@
             "image": "./images/mediakinochi.jpg",
             "url": "https://t.me/media_kinochi_bot",
             "technologies": ["VIBE CODING" , "Python", "Sqlite3"]
+        },
+        {
+            "title": "Namoz Vaqtlari",
+            "description": "Namoz vaqtlarini ko'rsatadigan web ilova",
+            "detailedDescription": "Bu ilova foydalanuvchilarga o'z joylashuviga asoslangan holda namoz vaqtlarini ko'rsatadi. Foydalanuvchi do'stona interfeys va real vaqt ma'lumotlari bilan.",
+            "image": "./images/namozvaqtlari.png",
+            "url": "https://namoz-vaqtlari-uz.vercel.app",
+            "technologies": ["HTML , JS", "API", "TAILWIND"]
         }
     ],
     "contact": {
