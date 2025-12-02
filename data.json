@@ -81,6 +81,14 @@
             "image": "./images/namozvaqtlari.png",
             "url": "https://namoz-vaqtlari-uz.vercel.app",
             "technologies": ["HTML , JS", "API", "TAILWIND"]
+        },
+        {
+            "title": "Speaking Test",
+            "description": "Ingliz tili gapirish test ilovasi",
+            "detailedDescription": "Bu ilova foydalanuvchilarga ingliz tilida gapirish ko'nikmalarini sinash imkonini beradi. Foydalanuvchi do'stona interfeys va interaktiv testlar bilan.",
+            "image": "./images/speakingtest.png",
+            "url": "https://speaking-test-uz.vercel.app",
+            "technologies": ["HTML , JS", "CSS"]
         }
     ],
     "contact": {
