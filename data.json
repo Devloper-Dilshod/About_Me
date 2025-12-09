@@ -89,6 +89,22 @@
             "image": "./images/speakingtest.png",
             "url": "https://speaking-test-uz.vercel.app",
             "technologies": ["HTML , JS", "CSS"]
+        },
+        {
+            "title": "Media Filmchi Bot Web",
+            "description": "@media_filmchi_bot bot uchun web ilova",
+            "detailedDescription": "Bu ilova foydalanuvchilarga @media_filmchi_bot bot orqali kinolarni nomi bilan qidirish imkonini beradi. Foydalanuvchi do'stona interfeys va tezkor natijalar bilan.",
+            "image": "noimage",
+            "url": "http://t.me/media_filmchi_bot/app",
+            "technologies": ["TAILWIND", "PHP", "VIBE CODING", "HTML"]
+        },
+        {
+            "title": "Aniyzynex bot WEB",
+            "description": "@aniyzynexbot bot uchun web ilova",
+            "detailedDescription": "Bu ilova foydalanuvchilarga @aniyzynexbot bot orqali aniy zynexlarni nomi bilan qidirish imkonini beradi. Foydalanuvchi do'stona interfeys va tezkor natijalar bilan.",
+            "image": "noimage",
+            "url": "https://t.me/anizynexbot/anizynex",
+            "technologies": ["TAILWIND", "PHP",  "VIBE CODING" , "HTML"]
         }
     ],
     "contact": {
