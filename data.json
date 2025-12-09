@@ -75,6 +75,14 @@
             "technologies": ["VIBE CODING" , "Python", "Sqlite3"]
         },
         {
+            "title": "Aniyzynex Bot",
+            "description": "Animelarni ko'rish uchun mukammal bot.",
+            "detailedDescription": "Animelarni oson va tez topish uchun qulay <span class='highlight'>VIBE CODING</span> bilan yaratilgan bot, admin panel va anime buyurtma berish tizimi bilan.",
+            "image": "./images/aniyzynex.jpg",
+            "url": "https://t.me/anizynexbot",
+            "technologies": ["VIBE CODING" , "Python", "Sqlite3"]
+        },
+        {
             "title": "Namoz Vaqtlari",
             "description": "Namoz vaqtlarini ko'rsatadigan web ilova",
             "detailedDescription": "Bu ilova foydalanuvchilarga o'z joylashuviga asoslangan holda namoz vaqtlarini ko'rsatadi. Foydalanuvchi do'stona interfeys va real vaqt ma'lumotlari bilan.",
