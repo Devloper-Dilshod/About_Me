@@ -113,6 +113,14 @@
             "image": "noimage",
             "url": "https://t.me/anizynexbot/anizynex",
             "technologies": ["TAILWIND", "PHP",  "VIBE CODING" , "HTML"]
+        },
+        {
+            "title": "Calory Web App",
+            "description": "Calory Converter web ilovasi",
+            "detailedDescription": "Bu ilova foydalanuvchilarga turli oziq-ovqat mahsulotlarining kaloriya miqdorini osonlik bilan hisoblash imkonini beradi. Foydalanuvchi do'stona interfeys va tezkor natijalar bilan.",
+            "image": "./images/none.png",
+            "url": "https://ai-image-generator-uz.vercel.app",
+            "technologies": ["HTML , JS", "TAILWIND",  "PHP"]
         }
     ],
     "contact": {
