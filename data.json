@@ -120,7 +120,7 @@
             "detailedDescription": "Bu ilova foydalanuvchilarga turli oziq-ovqat mahsulotlarining kaloriya miqdorini osonlik bilan hisoblash imkonini beradi. Foydalanuvchi do'stona interfeys va tezkor natijalar bilan.",
             "image": "./images/none.png",
             "url": "https://calory-web-app.vercel.app",
-            "technologies": ["REACT , API", "TAILWIND",  "PHP"]
+            "technologies": ["REACT", "API", "TAILWIND",  "PHP"]
         }
     ],
     "contact": {
